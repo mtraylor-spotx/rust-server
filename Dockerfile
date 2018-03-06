@@ -12,7 +12,8 @@ RUN apt-get update && \
     expect \
     tcl \
     libgdiplus && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* \
+    useradd rust
 
 # Remove default nginx stuff
 RUN rm -fr /usr/share/nginx/html/* && \
@@ -29,44 +30,44 @@ RUN curl -sL https://github.com/Facepunch/webrcon/archive/24b0898d86706723d52bb4
 ADD fix_conn.sh /tmp/fix_conn.sh
 
 # Create and set the steamcmd folder as a volume
-RUN mkdir -p /steamcmd/rust
+RUN mkdir -p /home/rust/steamcmd/rust
 VOLUME ["/steamcmd/rust"]
 
 # Setup proper shutdown support
-ADD shutdown_app/ /shutdown_app/
-WORKDIR /shutdown_app
+ADD shutdown_app/ /home/rust/shutdown_app/
+WORKDIR /home/rust/shutdown_app
 RUN npm install
 
 # Setup restart support (for update automation)
-ADD restart_app/ /restart_app/
-WORKDIR /restart_app
+ADD restart_app/ /home/rust/restart_app/
+WORKDIR /home/rust/restart_app
 RUN npm install
 
 # Setup scheduling support
-ADD scheduler_app/ /scheduler_app/
+ADD scheduler_app/ /home/rust/scheduler_app/
 WORKDIR /scheduler_app
 RUN npm install
 
 # Setup rcon command relay app
-ADD rcon_app/ /rcon_app/
-WORKDIR /rcon_app
+ADD rcon_app/ /home/rust/rcon_app/
+WORKDIR /home/rust/rcon_app
 RUN npm install
-RUN ln -s /rcon_app/app.js /usr/bin/rcon
+RUN ln -s /home/rust/rcon_app/app.js /usr/bin/rcon
 
 # Add the steamcmd installation script
-ADD install.txt /install.txt
+ADD install.txt /home/rust/install.txt
 
 # Copy the Rust startup script
-ADD start_rust.sh /start.sh
+ADD start_rust.sh /home/rust/start.sh
 
 # Copy the Rust update check script
-ADD update_check.sh /update_check.sh
+ADD update_check.sh /home/rust/update_check.sh
 
 # Copy extra files
-COPY README.md LICENSE.md /
+COPY README.md LICENSE.md uid_entrypoint /home/rust/
 
 # Set the current working directory
-WORKDIR /
+WORKDIR /home/rust
 
 # Expose necessary ports
 EXPOSE 8080
@@ -76,14 +77,14 @@ EXPOSE 28016
 # Setup default environment variables for the server
 ENV RUST_SERVER_STARTUP_ARGUMENTS "-batchmode -load +server.secure 1"
 ENV RUST_SERVER_IDENTITY "docker"
-ENV RUST_SERVER_SEED "12345"
-ENV RUST_SERVER_NAME "Rust Server [DOCKER]"
-ENV RUST_SERVER_DESCRIPTION "This is a Rust server running inside a Docker container!"
-ENV RUST_SERVER_URL "https://hub.docker.com/r/didstopia/rust-server/"
+ENV RUST_SERVER_SEED "13852"
+ENV RUST_SERVER_NAME "Rust Server [openshift]"
+ENV RUST_SERVER_DESCRIPTION "This is a Rust server running inside a Docker container!"    
+ENV RUST_SERVER_URL "https://rust-rcon.openshift.mst.lab"
 ENV RUST_SERVER_BANNER_URL ""
 ENV RUST_RCON_WEB "1"
-ENV RUST_RCON_PORT "28016"
-ENV RUST_RCON_PASSWORD "docker"
+ENV RUST_RCON_PORT "38016"
+ENV RUST_RCON_PASSWORD "osrust"
 ENV RUST_UPDATE_CHECKING "0"
 ENV RUST_UPDATE_BRANCH "public"
 ENV RUST_START_MODE "0"
@@ -92,6 +93,10 @@ ENV RUST_OXIDE_UPDATE_ON_BOOT "1"
 ENV RUST_SERVER_WORLDSIZE "3500"
 ENV RUST_SERVER_MAXPLAYERS "500"
 ENV RUST_SERVER_SAVE_INTERVAL "600"
+ENV USER_NAME=rust HOME=/home/rust
 
-# Start the server
-ENTRYPOINT ["./start.sh"]
+RUN chgrp -R 0 /home/rust && \
+    chmod -R g=u /home/rust /etc/passwd
+
+USER 1001
+ENTRYPOINT ["./uid_entrypoint"]

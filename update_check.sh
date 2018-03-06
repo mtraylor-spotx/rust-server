@@ -25,8 +25,8 @@ fi
 
 # Get the old build id (default to 0)
 OLD_BUILDID=0
-if [ -f "/steamcmd/rust/build.id" ]; then
-	OLD_BUILDID="$(cat /steamcmd/rust/build.id)"
+if [ -f "/home/rust/steamcmd/rust/build.id" ]; then
+	OLD_BUILDID="$(cat /home/rust/steamcmd/rust/build.id)"
 fi
 
 # Minimal validation for the update branch
@@ -36,8 +36,8 @@ if [ "$STRING_SIZE" -lt "1" ]; then
 fi
 
 # Remove the old cached app info if it exists
-if [ -f "/root/Steam/appcache/appinfo.vdf" ]; then
-	rm -fr /root/Steam/appcache/appinfo.vdf
+if [ -f "/home/rust/Steam/appcache/appinfo.vdf" ]; then
+	rm -fr /home/rust/Steam/appcache/appinfo.vdf
 fi
 
 # Get the new build id directly from Steam
@@ -51,15 +51,15 @@ if [ "$STRING_SIZE" -lt "6" ]; then
 fi
 
 # Skip update checking if this is the first time
-if [ ! -f "/steamcmd/rust/build.id" ]; then
+if [ ! -f "/home/rust/steamcmd/rust/build.id" ]; then
 	echo "First time running update check (server build id not found), skipping update.."
-	echo $NEW_BUILDID > /steamcmd/rust/build.id
+	echo $NEW_BUILDID > /home/rust/steamcmd/rust/build.id
 	exit
 else
 	STRING_SIZE=${#OLD_BUILDID}
 	if [ "$STRING_SIZE" -lt "6" ]; then
 		echo "First time running update check (server build id empty), skipping update.."
-		echo $NEW_BUILDID > /steamcmd/rust/build.id
+		echo $NEW_BUILDID > /home/rust/steamcmd/rust/build.id
 		exit
 	fi
 fi
@@ -76,8 +76,8 @@ else
 	fi
 	
 	echo "Latest server build id ($NEW_BUILDID) is newer than the current one ($OLD_BUILDID), waiting for client update.."
-	echo $NEW_BUILDID > /steamcmd/rust/build.id
-	exec node /restart_app/app.js
+	echo $NEW_BUILDID > /home/rust/steamcmd/rust/build.id
+	exec node /home/rust/restart_app/app.js
 	child=$!
 	wait "$child"
 fi
