@@ -31,7 +31,6 @@ ADD fix_conn.sh /tmp/fix_conn.sh
 
 # Create and set the steamcmd folder as a volume
 RUN mkdir -p /home/rust/steamcmd/rust
-VOLUME ["/steamcmd/rust"]
 
 # Setup proper shutdown support
 ADD shutdown_app/ /home/rust/shutdown_app/
@@ -66,15 +65,11 @@ ADD update_check.sh /home/rust/update_check.sh
 # Copy extra files
 COPY README.md LICENSE.md uid_entrypoint /home/rust/
 
-RUN chmod -R u+x /home/rust/uid_entrypoint
-
 # Set the current working directory
 WORKDIR /home/rust
 
 # Expose necessary ports
-EXPOSE 8080
-EXPOSE 28015
-EXPOSE 28016
+EXPOSE 8080 28015 28016
 
 # Setup default environment variables for the server
 ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1" \
@@ -89,8 +84,9 @@ ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1" \
     RUST_SERVER_WORLDSIZE="3500" RUST_SERVER_MAXPLAYERS="500" \
     RUST_SERVER_SAVE_INTERVAL="600" USER_NAME=rust HOME=/home/rust 
 
-RUN chgrp -R 0 /home/rust && \
+RUN chmod -R u+x /home/rust/uid_entrypoint && \
+    chgrp -R 0 /home/rust && \
     chmod -R g=u /home/rust /etc/passwd
 
 USER 1001
-ENTRYPOINT ["/home/rust/uid_entrypoint"]
+ENTRYPOINT ["uid_entrypoint"]
