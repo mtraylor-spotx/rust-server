@@ -12,7 +12,7 @@ RUN apt-get update && \
     expect \
     tcl \
     libgdiplus && \
-    rm -rf /var/lib/apt/lists/* \
+    rm -rf /var/lib/apt/lists/* && \
     adduser -Ss /bin/bash -h /home/rust -g rust rust && \
     rm -fr /usr/share/nginx/html/* && \
 	rm -fr /etc/nginx/sites-available/* && \
