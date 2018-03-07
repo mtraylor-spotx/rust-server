@@ -7,7 +7,8 @@ RUN dnf makecache && \
     dnf update -y && \
     dnf install -y nginx expect libgdiplus bsdtar nodejs npm \
     glibc.i686 libstdc++.i686 && \
-    dnf clean all && \
+    dnf clean all
+RUN groupadd rust && \
     useradd -m -d /home/rust -s /bin/bash -g rust rust && \
     rm -fr /usr/share/nginx/html/*
 
@@ -59,7 +60,7 @@ RUN curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.t
 # Expose necessary ports
 EXPOSE 8080 28015 28016
 
-RUN chmod -R rust /home/rust && \
+RUN chown -R rust /home/rust && \
     chgrp -R 0 /home/rust && \
     chmod -R g=u /etc/passwd
 
