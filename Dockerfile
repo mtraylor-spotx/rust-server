@@ -67,8 +67,7 @@ EXPOSE 8080 28015 28016
 RUN chgrp -R 0 /home/rust && \
     chmod -R g=u /home/rust /etc/passwd
 
-#ENTRYPOINT ["/uid_entrypoint"]
-cmd bash
+ENTRYPOINT ["/uid_entrypoint"]
 
 USER 1001
 

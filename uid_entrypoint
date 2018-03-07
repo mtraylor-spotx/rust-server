@@ -7,4 +7,4 @@ if ! whoami &> /dev/null; then
   fi
 fi
 
-/home/rust/start.sh $@
+/home/rust/start_rust.sh $@
