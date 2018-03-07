@@ -13,10 +13,8 @@ RUN apt-get update && \
     tcl \
     libgdiplus && \
     rm -rf /var/lib/apt/lists/* \
-    useradd rust
-
-# Remove default nginx stuff
-RUN rm -fr /usr/share/nginx/html/* && \
+    adduser -Ss /bin/bash -h /home/rust -g rust rust && \
+    rm -fr /usr/share/nginx/html/* && \
 	rm -fr /etc/nginx/sites-available/* && \
 	rm -fr /etc/nginx/sites-enabled/*
 
@@ -65,7 +63,7 @@ WORKDIR /home/rust
 EXPOSE 8080 28015 28016
 
 RUN chgrp -R 0 /home/rust && \
-    chmod -R g=u /home/rust /etc/passwd
+    chmod -R g=u /etc/passwd
 
 ENTRYPOINT ["/uid_entrypoint"]
 
