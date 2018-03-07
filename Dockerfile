@@ -58,7 +58,7 @@ WORKDIR /home/rust
 RUN curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
 # Expose necessary ports
-EXPOSE 8080 28015 28016
+EXPOSE 8080 31015 31015
 
 RUN chown -R rust /home/rust && \
     chgrp -R 0 /home/rust && \
@@ -69,7 +69,7 @@ ENTRYPOINT ["/uid_entrypoint.sh"]
 USER 1000
 
 # Setup default environment variables for the server
-ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1" \
+ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1 +server.port 31015 +rcon.port 31016" \
     RUST_SERVER_IDENTITY="docker" RUST_SERVER_SEED="13852" \
     RUST_SERVER_NAME="Rust Server [openshift]" \
     RUST_SERVER_DESCRIPTION="This is a Rust server running inside a Docker container!" \
