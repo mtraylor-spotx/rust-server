@@ -90,4 +90,4 @@ RUN chmod -R u+x /home/rust/uid_entrypoint && \
     export PATH=/home/rust:$PATH 
 
 USER 1001
-ENTRYPOINT ["uid_entrypoint"]
+ENTRYPOINT ["./uid_entrypoint"]
