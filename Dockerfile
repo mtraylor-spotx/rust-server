@@ -1,4 +1,4 @@
-FROM alpine
+FROM docker.io/fedora:27
 
 MAINTAINER Matt Traylor <mtraylor@spotx.tv>
 
