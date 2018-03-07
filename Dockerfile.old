@@ -1,27 +1,37 @@
-FROM alpine
+FROM didstopia/base:nodejs-steamcmd-ubuntu-16.04
 
-MAINTAINER Matt Traylor <mtraylor@spotx.tv>
+MAINTAINER Didstopia <support@didstopia.com>
+
+# Fix apt-get warnings
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
-RUN dnf makecache && \
-    dnf update -y && \
-    dnf install -y nginx expect libgdiplus bsdtar nodejs npm \
-    glibc.i686 libstdc++.i686 && \
-    dnf clean all && \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    nginx \
+    expect \
+    tcl \
+    libgdiplus && \
+    rm -rf /var/lib/apt/lists/* && \
+    addgroup --group rust && \
     useradd -m -d /home/rust -s /bin/bash -g rust rust && \
-    rm -fr /usr/share/nginx/html/*
+    rm -fr /usr/share/nginx/html/* && \
+	rm -fr /etc/nginx/sites-available/* && \
+	rm -fr /etc/nginx/sites-enabled/*
 
 # Install webrcon (specific commit)
 COPY nginx_rcon.conf /etc/nginx/nginx.conf
 RUN curl -sL https://github.com/Facepunch/webrcon/archive/24b0898d86706723d52bb4db8559d90f7c9e069b.zip | bsdtar -xvf- -C /tmp && \
-  mv /tmp/webrcon-24b0898d86706723d52bb4db8559d90f7c9e069b/* /usr/share/nginx/html/ && \
-  rm -fr /tmp/webrcon-24b0898d86706723d52bb4db8559d90f7c9e069b
+	mv /tmp/webrcon-24b0898d86706723d52bb4db8559d90f7c9e069b/* /usr/share/nginx/html/ && \
+	rm -fr /tmp/webrcon-24b0898d86706723d52bb4db8559d90f7c9e069b
 
 # Customize the webrcon package to fit our needs
 ADD fix_conn.sh /tmp/fix_conn.sh
 
 # Create and set the steamcmd folder as a volume
-RUN mkdir -p /home/rust/steamcmd/rust && \
+RUN chown -R rust:rust /home/rust && \
+    chmod 777 /home/rust && \
+    mkdir -p /home/rust/steamcmd/rust && \
     chgrp -R 0 /home/rust && \
     chmod -R g=u /home/rust
 
@@ -54,13 +64,10 @@ ADD uid_entrypoint.sh /
 # Set the current working directory
 WORKDIR /home/rust
 
-RUN curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
-
 # Expose necessary ports
 EXPOSE 8080 28015 28016
 
-RUN chmod -R rust /home/rust && \
-    chgrp -R 0 /home/rust && \
+RUN chgrp -R 0 /home/rust && \
     chmod -R g=u /etc/passwd
 
 ENTRYPOINT ["/uid_entrypoint.sh"]
