@@ -50,26 +50,26 @@ RUN npm install
 # Setup rcon command relay app
 ADD rcon_app/ /home/rust/rcon_app/
 WORKDIR /home/rust/rcon_app
-RUN npm install
-RUN ln -s /home/rust/rcon_app/app.js /usr/bin/rcon
-
-# Add the steamcmd installation script
-ADD install.txt /home/rust/install.txt
+RUN npm install && ln -s /home/rust/rcon_app/app.js /usr/bin/rcon
 
 # Copy the Rust startup script
-ADD start_rust.sh /home/rust/start.sh
-
-# Copy the Rust update check script
-ADD update_check.sh /home/rust/update_check.sh
+COPY start_rust.sh install.txt update_check.sh README.md LICENSE.md /home/rust/
 
 # Copy extra files
-COPY README.md LICENSE.md uid_entrypoint /home/rust/
+COPY uid_entrypoint /
 
 # Set the current working directory
 WORKDIR /home/rust
 
 # Expose necessary ports
 EXPOSE 8080 28015 28016
+
+RUN chgrp -R 0 /home/rust && \
+    chmod -R g=u /home/rust /etc/passwd
+
+ENTRYPOINT ["/uid_entrypoint"]
+
+USER 1001
 
 # Setup default environment variables for the server
 ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1" \
@@ -82,12 +82,5 @@ ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1" \
     RUST_UPDATE_BRANCH="public" RUST_START_MODE="0" \
     RUST_OXIDE_ENABLED="0" RUST_OXIDE_UPDATE_ON_BOOT="1" \
     RUST_SERVER_WORLDSIZE="3500" RUST_SERVER_MAXPLAYERS="500" \
-    RUST_SERVER_SAVE_INTERVAL="600" USER_NAME=rust HOME=/home/rust 
-
-RUN chmod -R u+x /home/rust/uid_entrypoint && \
-    chgrp -R 0 /home/rust && \
-    chmod -R g=u /home/rust /etc/passwd && \
-    export PATH=/home/rust:$PATH 
-
-USER 1001
-ENTRYPOINT ["./uid_entrypoint"]
+    RUST_SERVER_SAVE_INTERVAL="600" USER_NAME=rust HOME=/home/rust \
+    PATH=/home/rust:$PATH 
