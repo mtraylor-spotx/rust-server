@@ -58,7 +58,7 @@ WORKDIR /home/rust
 RUN curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz" | tar zxvf -
 
 # Expose necessary ports
-EXPOSE 8080 31015 31015
+EXPOSE 8080 31015 31016
 
 RUN chown -R rust /home/rust && \
     chgrp -R 0 /home/rust && \
