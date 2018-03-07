@@ -86,7 +86,8 @@ ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1" \
 
 RUN chmod -R u+x /home/rust/uid_entrypoint && \
     chgrp -R 0 /home/rust && \
-    chmod -R g=u /home/rust /etc/passwd
+    chmod -R g=u /home/rust /etc/passwd && \
+    export PATH=/home/rust:$PATH 
 
 USER 1001
 ENTRYPOINT ["uid_entrypoint"]
