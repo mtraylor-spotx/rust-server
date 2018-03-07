@@ -66,6 +66,8 @@ ADD update_check.sh /home/rust/update_check.sh
 # Copy extra files
 COPY README.md LICENSE.md uid_entrypoint /home/rust/
 
+RUN chmod -R u+x /home/rust/uid_entrypoint
+
 # Set the current working directory
 WORKDIR /home/rust
 
@@ -91,4 +93,4 @@ RUN chgrp -R 0 /home/rust && \
     chmod -R g=u /home/rust /etc/passwd
 
 USER 1001
-ENTRYPOINT ["./uid_entrypoint"]
+ENTRYPOINT ["/home/rust/uid_entrypoint"]
