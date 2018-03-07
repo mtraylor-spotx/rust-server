@@ -53,10 +53,10 @@ WORKDIR /home/rust/rcon_app
 RUN npm install && ln -s /home/rust/rcon_app/app.js /usr/bin/rcon
 
 # Copy the Rust startup script
-COPY start_rust.sh install.txt update_check.sh README.md LICENSE.md /home/rust/
+ADD start_rust.sh install.txt update_check.sh README.md LICENSE.md /home/rust/
 
 # Copy extra files
-COPY uid_entrypoint /
+ADD uid_entrypoint /
 
 # Set the current working directory
 WORKDIR /home/rust
