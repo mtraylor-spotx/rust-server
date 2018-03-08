@@ -6,7 +6,7 @@ MAINTAINER Matt Traylor <mtraylor@spotx.tv>
 RUN dnf makecache && \
     dnf update -y && \
     dnf install -y nginx expect libgdiplus bsdtar nodejs npm \
-    glibc.i686 libstdc++.i686 && \
+    glibc.i686 libstdc++.i686 net-tools procps && \
     dnf clean all
 RUN groupadd rust && \
     useradd -m -d /home/rust -s /bin/bash -g rust rust && \
@@ -61,10 +61,10 @@ RUN curl -sqL "https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.t
 EXPOSE 8080 31015 31016
 
 RUN chown -R rust /home/rust && \
-    chgrp -R 0 /home/rust && \
+    chgrp -R 0 /home/rust /var/log/nginx && \
     chmod -R g=u /etc/passwd && \
     chmod -R g=u /var/log/nginx/
-    
+
 
 ENTRYPOINT ["/uid_entrypoint.sh"]
 
