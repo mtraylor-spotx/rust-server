@@ -62,7 +62,9 @@ EXPOSE 8080 31015 31016
 
 RUN chown -R rust /home/rust && \
     chgrp -R 0 /home/rust && \
-    chmod -R g=u /etc/passwd
+    chmod -R g=u /etc/passwd && \
+    chmod -R g=u /var/log/nginx/
+    
 
 ENTRYPOINT ["/uid_entrypoint.sh"]
 
@@ -74,7 +76,7 @@ ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1 +server.por
     RUST_SERVER_NAME="Rust Server [openshift]" \
     RUST_SERVER_DESCRIPTION="This is a Rust server running inside a Docker container!" \
     RUST_SERVER_URL="https://rust-rcon.openshift.mst.lab" \
-    RUST_SERVER_BANNER_URL="" RUST_RCON_WEB="1" RUST_RCON_PORT="28016" \
+    RUST_SERVER_BANNER_URL="" RUST_RCON_WEB="1" \
     RUST_RCON_PASSWORD="osrust" RUST_UPDATE_CHECKING="0" \
     RUST_UPDATE_BRANCH="public" RUST_START_MODE="0" \
     RUST_OXIDE_ENABLED="0" RUST_OXIDE_UPDATE_ON_BOOT="1" \
