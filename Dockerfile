@@ -71,13 +71,13 @@ ENTRYPOINT ["/uid_entrypoint.sh"]
 USER 1000
 
 # Setup default environment variables for the server
-ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1 +server.port 31015 +rcon.port 31016 +rcon.password osrust" \
+ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1 +server.port 31015 " \
     RUST_SERVER_IDENTITY="docker" RUST_SERVER_SEED="13852" \
     RUST_SERVER_NAME="Rust Server [openshift]" \
     RUST_SERVER_DESCRIPTION="This is a Rust server running inside a Docker container!" \
-    RUST_SERVER_URL="https://rust-rcon.openshift.mst.lab" \
+    RUST_SERVER_URL="https://rust-rcon.openshift.mst.lab" RUST_RCON_PORT="31016" \
     RUST_SERVER_BANNER_URL="" RUST_RCON_WEB="1" \
-    RUST_UPDATE_CHECKING="0" \
+    RUST_RCON_PASSWPRD="osrust" RUST_UPDATE_CHECKING="0" \
     RUST_UPDATE_BRANCH="public" RUST_START_MODE="0" \
     RUST_OXIDE_ENABLED="0" RUST_OXIDE_UPDATE_ON_BOOT="1" \
     RUST_SERVER_WORLDSIZE="3500" RUST_SERVER_MAXPLAYERS="500" \
