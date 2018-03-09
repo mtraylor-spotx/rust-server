@@ -77,7 +77,7 @@ ENV RUST_SERVER_STARTUP_ARGUMENTS="-batchmode -load +server.secure 1 +server.por
     RUST_SERVER_DESCRIPTION="This is a Rust server running inside a Docker container!" \
     RUST_SERVER_URL="https://rust-rcon.openshift.mst.lab" \
     RUST_SERVER_BANNER_URL="" RUST_RCON_WEB="1" \
-    RUST_RCON_PASSWORD="osrust" RUST_UPDATE_CHECKING="0" \
+    RUST_UPDATE_CHECKING="0" \
     RUST_UPDATE_BRANCH="public" RUST_START_MODE="0" \
     RUST_OXIDE_ENABLED="0" RUST_OXIDE_UPDATE_ON_BOOT="1" \
     RUST_SERVER_WORLDSIZE="3500" RUST_SERVER_MAXPLAYERS="500" \
